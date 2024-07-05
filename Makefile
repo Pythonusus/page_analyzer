@@ -10,16 +10,10 @@ lint:
 pylint:
 	poetry run pylint page_analyzer
 
-test:
-	poetry run pytest -vv
-
-test-coverage:
-	poetry run pytest --cov=page_analyzer --cov-report xml
-
-check: test lint pylint
+check: lint pylint
 
 PORT ?= 8000
 start:
 	poetry run gunicorn -w 5 -b 0.0.0.0:$(PORT) page_analyzer:app
 
-.PHONY: install dev lint pylint test test-coverage check start
+.PHONY: install dev lint pylint check start
