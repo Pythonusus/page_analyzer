@@ -10,7 +10,7 @@ classifiers = [
     "Framework :: Flask"
 ]
 packages = [
-  { include = "[page_analyzer]" },
+  { include = "page_analyzer" },
 ]
 
 
