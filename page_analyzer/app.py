@@ -1,9 +1,9 @@
-from flask import Flask
+from flask import Flask, render_template
 
 app = Flask(__name__)
 
 
 # Обработчик главной страницы
-@app.route('/')
+@app.route("/")
 def index():
-    return 'Hello, World!'
+    return render_template("templates/index.html")
