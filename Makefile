@@ -10,8 +10,11 @@ lint:
 pylint:
 	poetry run pylint page_analyzer
 
+build:
+	./build.sh
+
 PORT ?= 8000
 start:
 	poetry run gunicorn -w 5 -b 0.0.0.0:$(PORT) page_analyzer:app
 
-.PHONY: install dev lint pylint start
+.PHONY: install dev lint pylint start build
