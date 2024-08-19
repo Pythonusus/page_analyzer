@@ -15,7 +15,8 @@ app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 # Обработчик главной страницы
 @app.route("/")
 def index():
-    return render_template("index.html")
+    """Show main page"""
+    return render_template("index.html", messages=[], url="")
 
 
 @app.post("/urls")
@@ -56,6 +57,7 @@ def submit_url():
     return redirect(url_for("show_url_page", url_id=url_id))
 
 
+# Get png image from static
 @app.route("/<image>")
 def get_png_image(image):
     """
