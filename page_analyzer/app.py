@@ -2,7 +2,24 @@ import os
 
 import psycopg2
 from dotenv import load_dotenv
-from flask import Flask, make_response, render_template
+from flask import (
+    Flask,
+    flash,
+    get_flashed_messages,
+    make_response,
+    redirect,
+    render_template,
+    request,
+    url_for
+)
+
+from page_analyzer.db import (
+    add_url_to_db,
+    find_url_by_id,
+    find_url_by_name,
+    get_all_urls
+)
+from page_analyzer.utils import normalize_url, validate_url
 
 load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
@@ -12,7 +29,6 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 
 
-# Обработчик главной страницы
 @app.route("/")
 def index():
     """Show main page"""
