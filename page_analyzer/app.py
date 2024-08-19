@@ -19,6 +19,15 @@ def index():
     return render_template("index.html", messages=[], url="")
 
 
+@app.route("/urls")
+def show_urls_list():
+    """Select all urls from DB and show them"""
+    urls = get_all_urls()
+    return render_template(
+        "urls.html",
+        urls=urls,
+    )
+
 @app.post("/urls")
 def submit_url():
     """
