@@ -54,7 +54,7 @@ def show_url_page(url_id):
     Args:
         url_id (str): url id in DB
     """
-    messages = get_flashed_messages()
+    messages = get_flashed_messages(with_categories=True)
     data = find_url_by_id(url_id)
     return render_template(
         "url.html",
@@ -79,7 +79,7 @@ def submit_url():
     error = validate_url(url)
     if error:
         flash(error, "danger")
-        messages = get_flashed_messages()
+        messages = get_flashed_messages(with_categories=True)
         return (
             render_template(
                 "index.html",
@@ -97,7 +97,7 @@ def submit_url():
         url_id = add_url_to_db(url)
         flash("Страница успешно добавлена", "success")
 
-    messages = get_flashed_messages()
+    messages = get_flashed_messages(with_categories=True)
     return redirect(url_for("show_url_page", url_id=url_id))
 
 
