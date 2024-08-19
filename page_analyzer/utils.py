@@ -1,6 +1,6 @@
 from urllib.parse import urlparse, urlunparse
 
-from validators.url import url as url_validator
+from validators import url as url_validator
 
 MAX_URL_LENGTH = 255
 
