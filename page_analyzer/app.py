@@ -28,6 +28,25 @@ def show_urls_list():
         urls=urls,
     )
 
+
+@app.route("/urls/<url_id>")
+def show_url_page(url_id):
+    """
+    Select specific url from DB by id.
+    Show url's page.
+
+    Args:
+        url_id (str): url id in DB
+    """
+    messages = get_flashed_messages()
+    data = find_url_by_id(url_id)
+    return render_template(
+        "url.html",
+        data=data,
+        messages=messages
+    )
+
+
 @app.post("/urls")
 def submit_url():
     """
