@@ -22,3 +22,12 @@ def add_url_to_db(url):
             url_id = cur.fetchone().id
     conn.close()
     return url_id
+
+
+def find_url_by_name(url):
+    with connect(DATABASE_URL) as conn:
+        with conn.cursor(cursor_factory=extras.NamedTupleCursor) as cur:
+            cur.execute("SELECT * FROM urls WHERE name = %s;", (url,))
+            data = cur.fetchone()
+    conn.close()
+    return data
