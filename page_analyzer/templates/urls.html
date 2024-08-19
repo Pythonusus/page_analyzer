@@ -1,0 +1,31 @@
+{% extends 'layouts/base_layout.html' %}
+
+{% block content %}
+
+<h1>Сайты</h1>
+<table class="table table-bordered table-hover text-nowrap" data-test="urls">
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>Имя</th>
+    <th>Последняя проверка</th>
+    <th>Код ответа</th>
+  </tr>
+  </thead>
+  <tbody>
+    {% for url in urls %}
+      <tr>
+        <td>{{ url.id }}</td>
+        <td>
+          <a href="{{ url_for('show_url_page', url_id='{{ url.id }}') }}">
+            {{ url.name }}
+          </a>
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}
+
+
