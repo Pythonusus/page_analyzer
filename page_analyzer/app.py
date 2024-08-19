@@ -17,6 +17,44 @@ def index():
     return render_template("index.html")
 
 
+@app.post("/urls")
+def submit_url():
+    """
+    Recieve url from form.
+    Validate user data.
+    If data has errors, flash error message.
+    If no errors occured, check if url is present in DB.
+    If url is present in DB, redirect to url page and flash info message.
+    If url is not in DB, add url to DB, redirect to url page
+    and flash success message.
+    """
+    data = request.form.to_dict()
+    url = data.get("url")
+    error = validate_url(data)
+    if error:
+        flash(error, "danger")
+        messages = get_flashed_messages()
+        return (
+            render_template(
+                "index.html",
+                url=url,
+                messages=messages,
+            ),
+            422,
+        )
+    url = normalize_url(url)
+    url_in_db = find_url_by_name(url)
+    if url_in_db:
+        url_id = url_in_db.id
+        flash("Страница уже существует", "info")
+    else:
+        url_id = add_url_to_db(url)
+        flash("Страница успешно добавлена", "success")
+
+    messages = get_flashed_messages()
+    return redirect(url_for("show_url_page", url_id=url_id))
+
+
 @app.route("/<image>")
 def get_png_image(image):
     """
