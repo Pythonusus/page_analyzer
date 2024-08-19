@@ -12,5 +12,5 @@ def normalize_url(url):
 def validate_url(url):
     if not url_validator(url):
         return "Некорректный URL"
-    elif len(url) > MAX_URL_LENGTH:
+    if len(url) > MAX_URL_LENGTH:
         return "URL превышает 255 символов"
