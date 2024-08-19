@@ -1,0 +1,25 @@
+{% extends 'layouts/base_layout.html' %}
+
+{% block content %}
+
+<h1>Сайт: {{ data.name }}</h1>
+<div class="table-responsive">
+  <table class="table table-bordered table-hover text-nowrap" data-test="url">
+    <tbody>
+      <tr>
+        <td>ID</td>
+        <td>{{ data.id }}</td>
+      </tr>
+      <tr>
+        <td>Имя</td>
+        <td>{{ data.name }}</td>
+      </tr>
+      <tr>
+        <td>Дата создания</td>
+        <td>{{ data.created_at }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}
