@@ -40,3 +40,12 @@ def find_url_by_id(url_id):
             data = cur.fetchone()
     conn.close()
     return data
+
+
+def get_all_urls():
+    with connect(DATABASE_URL) as conn:
+        with conn.cursor(cursor_factory=extras.NamedTupleCursor) as cur:
+            cur.execute("SELECT * FROM urls;")
+            data = cur.fetchall()
+    conn.close()
+    return data
