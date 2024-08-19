@@ -31,3 +31,12 @@ def find_url_by_name(url):
             data = cur.fetchone()
     conn.close()
     return data
+
+
+def find_url_by_id(url_id):
+    with connect(DATABASE_URL) as conn:
+        with conn.cursor(cursor_factory=extras.NamedTupleCursor) as cur:
+            cur.execute("SELECT * FROM urls WHERE id= %s;", (url_id,))
+            data = cur.fetchone()
+    conn.close()
+    return data
