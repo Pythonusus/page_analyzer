@@ -76,7 +76,7 @@ def submit_url():
     """
     data = request.form.to_dict()
     url = data.get("url")
-    error = validate_url(data)
+    error = validate_url(url)
     if error:
         flash(error, "danger")
         messages = get_flashed_messages()
