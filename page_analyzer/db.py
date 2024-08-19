@@ -14,7 +14,7 @@ def add_url_to_db(url):
             cur.execute(
                 """
                 INSERT INTO urls (name, created_at)
-                VALUES (%(str)s, %(date)s)
+                VALUES (%(name)s, %(date)s)
                 RETURNING id;
                 """,
                 {"name": url, "date": dt.today().isoformat()},
