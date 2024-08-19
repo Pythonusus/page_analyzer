@@ -17,11 +17,19 @@ def index():
     return render_template("index.html")
 
 
-# Обработчик загрузки статики
-@app.route("/<file>")
-def get_static(file):
-    with open(f"page_analyzer/static/{file}", mode="rb") as f:
-        logo = f.read()
-    res = make_response(logo)
+@app.route("/<image>")
+def get_png_image(image):
+    """
+    Returns png image from static files.
+
+    Args:
+        image (str): file name
+
+    Returns:
+        Response obj: png image
+    """
+    with open(f"page_analyzer/static/{image}", mode="rb") as f:
+        image = f.read()
+    res = make_response(image)
     res.headers["Content-Type"] = "image/png"
     return res
