@@ -97,7 +97,6 @@ def submit_url():
         url_id = add_url_to_db(url)
         flash("Страница успешно добавлена", "success")
 
-    messages = get_flashed_messages(with_categories=True)
     return redirect(url_for("show_url_page", url_id=url_id))
 
 
