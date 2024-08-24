@@ -49,3 +49,46 @@ def get_all_urls():
             data = cur.fetchall()
     conn.close()
     return data
+
+
+def add_check_to_db(url_id):
+    with connect(DATABASE_URL) as conn:
+        with conn.cursor(cursor_factory=extras.NamedTupleCursor) as cur:
+            cur.execute(
+                """
+                INSERT INTO url_checks
+                (url_id, status_code, h1, title, description, created_at)
+                VALUES (
+                    %(url_id)s,
+                    %(status_code)s,
+                    %(h1)s,
+                    %(title)s,
+                    %(description)s,
+                    %(created_at)s
+                )
+                RETURNING url_id;
+                """,
+                {
+                    "url_id": url_id,
+                    "status_code": None,
+                    "h1": None,
+                    "title": None,
+                    "description": None,
+                    "created_at": dt.today()
+                }
+            )
+            url_id = cur.fetchone().url_id
+    conn.close()
+    return url_id
+
+
+def get_all_url_checks(url_id):
+    with connect(DATABASE_URL) as conn:
+        with conn.cursor(cursor_factory=extras.NamedTupleCursor) as cur:
+            cur.execute(
+                "SELECT * FROM url_checks WHERE url_id = %s;",
+                (url_id,)
+            )
+            data = cur.fetchall()
+    conn.close()
+    return data
