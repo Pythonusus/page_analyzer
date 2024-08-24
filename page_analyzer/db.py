@@ -17,7 +17,7 @@ def add_url_to_db(url):
                 VALUES (%(name)s, %(date)s)
                 RETURNING id;
                 """,
-                {"name": url, "date": dt.today().isoformat()},
+                {"name": url, "date": dt.today()},
             )
             url_id = cur.fetchone().id
     conn.close()
