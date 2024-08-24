@@ -14,6 +14,7 @@ from flask import (
 )
 
 from page_analyzer.db import (
+    add_check_to_db,
     add_url_to_db,
     find_url_by_id,
     find_url_by_name,
@@ -97,6 +98,16 @@ def submit_url():
         url_id = add_url_to_db(url)
         flash("Страница успешно добавлена", "success")
 
+    return redirect(url_for("show_url_page", url_id=url_id))
+
+
+@app.post("/urls/<url_id>/checks")
+def post_check(url_id):
+    """
+    WRITE LATER
+    """
+    url_id = add_check_to_db(url_id)
+    flash("Страница успешно проверена", "success")
     return redirect(url_for("show_url_page", url_id=url_id))
 
 
