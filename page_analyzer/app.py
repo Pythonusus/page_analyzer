@@ -18,6 +18,7 @@ from page_analyzer.db import (
     add_url_to_db,
     find_url_by_id,
     find_url_by_name,
+    get_all_url_checks,
     get_all_urls
 )
 from page_analyzer.utils import normalize_url, validate_url
@@ -57,9 +58,11 @@ def show_url_page(url_id):
     """
     messages = get_flashed_messages(with_categories=True)
     data = find_url_by_id(url_id)
+    checks = get_all_url_checks(url_id)
     return render_template(
         "url.html",
         data=data,
+        checks=checks,
         messages=messages
     )
 
