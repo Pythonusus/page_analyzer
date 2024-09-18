@@ -1,6 +1,7 @@
 import os
 
 import psycopg2
+import requests
 from dotenv import load_dotenv
 from flask import (
     Flask,
@@ -21,7 +22,7 @@ from page_analyzer.db import (
     get_all_url_checks,
     get_all_urls
 )
-from page_analyzer.utils import normalize_url, validate_url
+from page_analyzer.utils import normalize_url, parse_html, validate_url
 
 load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
@@ -109,7 +110,18 @@ def post_check(url_id):
     """
     WRITE LATER
     """
-    url_id = add_check_to_db(url_id)
+    url = find_url_by_id(url_id)
+    try:
+        response = requests.get(url.name)
+        response.raise_for_status()
+    except requests.RequestException:
+        flash("Произошла ошибка при проверке", "danger")
+        return redirect(url_for("show_url_page", url_id=url_id))
+
+    status_code = response.status_code
+    html = response.text
+    data = parse_html(html)
+    add_check_to_db(url_id, status_code, data)
     flash("Страница успешно проверена", "success")
     return redirect(url_for("show_url_page", url_id=url_id))
 

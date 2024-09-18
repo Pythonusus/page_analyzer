@@ -72,7 +72,7 @@ def get_all_urls():
     return data
 
 
-def add_check_to_db(url_id):
+def add_check_to_db(url_id, status_code, data):
     with connect(DATABASE_URL) as conn:
         with conn.cursor(cursor_factory=extras.NamedTupleCursor) as cur:
             cur.execute(
@@ -87,20 +87,20 @@ def add_check_to_db(url_id):
                     %(description)s,
                     %(created_at)s
                 )
-                RETURNING url_id;
+                RETURNING id;
                 """,
                 {
                     "url_id": url_id,
-                    "status_code": None,
-                    "h1": None,
-                    "title": None,
-                    "description": None,
+                    "status_code": status_code,
+                    "h1": data.get("h1"),
+                    "title": data.get("title"),
+                    "description": data.get("description"),
                     "created_at": dt.today()
                 }
             )
-            url_id = cur.fetchone().url_id
+            check_id = cur.fetchone().id
     conn.close()
-    return url_id
+    return check_id
 
 
 def get_all_url_checks(url_id):
