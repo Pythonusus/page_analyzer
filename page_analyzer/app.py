@@ -108,7 +108,11 @@ def submit_url():
 @app.post("/urls/<url_id>/checks")
 def post_check(url_id):
     """
-    WRITE LATER
+    Find url in DB by given url_id.
+    Perform SEO-analysis of given url.
+    If error occures, redirect to url page and flash error message.
+    If no errors occured, parse html from given url, add check to DB,
+    redirect to url page and flash success message.
     """
     url = find_url_by_id(url_id)
     try:
