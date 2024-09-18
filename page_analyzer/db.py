@@ -45,7 +45,28 @@ def find_url_by_id(url_id):
 def get_all_urls():
     with connect(DATABASE_URL) as conn:
         with conn.cursor(cursor_factory=extras.NamedTupleCursor) as cur:
-            cur.execute("SELECT * FROM urls;")
+            cur.execute(
+                """
+                WITH last_checks AS (
+                SELECT *
+                FROM url_checks AS checks1
+                WHERE checks1.id = (
+                    SELECT MAX(checks2.id)
+                    FROM url_checks AS checks2
+                    WHERE checks1.url_id = checks2.url_id
+                )
+                )
+
+                SELECT
+                    urls.id,
+                    urls.name,
+                    last_checks.status_code,
+                    last_checks.created_at AS last_check
+                FROM urls
+                LEFT JOIN last_checks ON urls.id = last_checks.url_id
+                ORDER BY urls.id DESC;
+                """
+            )
             data = cur.fetchall()
     conn.close()
     return data
