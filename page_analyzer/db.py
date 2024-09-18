@@ -1,8 +1,8 @@
 import os
 from datetime import date as dt
 
-from psycopg2 import connect, extras
 from dotenv import load_dotenv
+from psycopg2 import connect, extras
 
 load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
