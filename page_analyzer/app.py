@@ -1,3 +1,5 @@
+"""HTTP requests handlers."""
+
 import os
 
 import psycopg2
