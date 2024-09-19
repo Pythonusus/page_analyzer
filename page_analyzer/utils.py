@@ -16,6 +16,7 @@ def validate_url(url):
         return "Некорректный URL"
     if len(url) > MAX_URL_LENGTH:
         return "URL превышает 255 символов"
+    return None
 
 
 def parse_html(html):
