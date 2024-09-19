@@ -30,8 +30,10 @@ def parse_html(html):
     """
     soup = BeautifulSoup(html, "html.parser")
     data = {}
-    data["h1"] = soup.h1.string
-    data["title"] = soup.title.string
+    h1 = soup.h1
+    title = soup.title
     description = soup.find("meta", attrs={"name": "description"}) or {}
+    data["h1"] = h1.string if h1 else None
+    data["title"] = title.string if title else None
     data["description"] = description.get("content")
     return data
