@@ -1,3 +1,5 @@
+"""Normalisation, validation and parsing utilities."""
+
 from urllib.parse import urlparse
 
 from bs4 import BeautifulSoup
