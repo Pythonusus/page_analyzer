@@ -116,7 +116,7 @@ def post_check(url_id):
     """
     url = find_url_by_id(url_id)
     try:
-        response = requests.get(url.name)
+        response = requests.get(url.name, timeout=10)
         response.raise_for_status()
     except requests.RequestException:
         flash("Произошла ошибка при проверке", "danger")
