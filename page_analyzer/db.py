@@ -1,3 +1,5 @@
+"""Utilities to work with database."""
+
 import os
 from datetime import date as dt
 
@@ -9,6 +11,16 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 
 
 def exec_query(query, params=None):
+    """
+    General function to establish DB connection and execute SQL queries.
+
+    Args:
+        query (str): SQL query
+        params (tuple or dict, optional): Query params. Defaults to None
+
+    Returns:
+        list of tuples: Query result data
+    """
     with connect(DATABASE_URL) as conn:
         with conn.cursor(cursor_factory=extras.NamedTupleCursor) as cur:
             cur.execute(query, params)
