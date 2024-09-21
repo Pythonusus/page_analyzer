@@ -15,14 +15,7 @@ from flask import (
     url_for
 )
 
-from page_analyzer.db import (
-    add_check_to_db,
-    add_url_to_db,
-    find_url_by_id,
-    find_url_by_name,
-    get_all_url_checks,
-    get_all_urls
-)
+import page_analyzer.db as db
 from page_analyzer.utils import normalize_url, parse_html, validate_url
 
 load_dotenv()
@@ -36,13 +29,13 @@ app.config["DATABASE_URL"] = os.getenv("DATABASE_URL")
 @app.route("/")
 def index():
     """Show main page"""
-    return render_template("index.html", messages=[], url="")
+    return render_template("index.html")
 
 
 @app.route("/urls")
 def show_urls_list():
     """Select all urls from DB and show them"""
-    urls = get_all_urls()
+    urls = db.get_all_urls()
     return render_template(
         "urls.html",
         urls=urls,
@@ -59,8 +52,8 @@ def show_url_page(url_id):
         url_id (str): url id in DB
     """
     messages = get_flashed_messages(with_categories=True)
-    data = find_url_by_id(url_id)
-    checks = get_all_url_checks(url_id)
+    data = db.find_url_by_id(url_id)
+    checks = db.get_all_url_checks(url_id)
     return render_template(
         "url.html",
         data=data,
@@ -95,12 +88,12 @@ def submit_url():
             422,
         )
     url = normalize_url(url)
-    url_in_db = find_url_by_name(url)
+    url_in_db = db.find_url_by_name(url)
     if url_in_db:
         url_id = url_in_db.id
         flash("Страница уже существует", "info")
     else:
-        url_id = add_url_to_db(url)
+        url_id = db.add_url_to_db(url)
         flash("Страница успешно добавлена", "success")
 
     return redirect(url_for("show_url_page", url_id=url_id))
@@ -115,7 +108,7 @@ def post_check(url_id):
     If no errors occured, parse html from given url, add check to DB,
     redirect to url page and flash success message.
     """
-    url = find_url_by_id(url_id)
+    url = db.find_url_by_id(url_id)
     try:
         response = requests.get(url.name, timeout=10)
         response.raise_for_status()
@@ -126,7 +119,7 @@ def post_check(url_id):
     status_code = response.status_code
     html = response.text
     data = parse_html(html)
-    add_check_to_db(url_id, status_code, data)
+    db.add_check_to_db(url_id, status_code, data)
     flash("Страница успешно проверена", "success")
     return redirect(url_for("show_url_page", url_id=url_id))
 
