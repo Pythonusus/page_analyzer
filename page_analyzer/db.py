@@ -1,45 +1,51 @@
 """Utilities to work with database."""
 
-import os
 from datetime import date as dt
 
-from dotenv import load_dotenv
 from psycopg2 import connect, extras
 
-load_dotenv()
-DATABASE_URL = os.getenv("DATABASE_URL")
+import page_analyzer.app as pa
 
 
-def exec_query(query, params=None):
+def connect_to_db():
+    return connect(pa.app.config.get("DATABASE_URL"))
+
+
+def exec_query(conn, query, params=None):
     """
-    General function to establish DB connection and execute SQL queries.
+    General function to execute SQL queries.
 
     Args:
+        conn (connection obj): DB connection
         query (str): SQL query
         params (tuple or dict, optional): Query params. Defaults to None
 
     Returns:
         list of tuples: Query result data
     """
-    with connect(DATABASE_URL) as conn:
+    with conn:
         with conn.cursor(cursor_factory=extras.NamedTupleCursor) as cur:
             cur.execute(query, params)
             data = cur.fetchall()
-    conn.close()
     return data
 
 
 def find_url_by_name(url):
-    query_result = exec_query("SELECT * FROM urls WHERE name = %s;", (url,))
-    return query_result[0] if query_result else None
+    conn = connect_to_db()
+    result = exec_query(conn, "SELECT * FROM urls WHERE name = %s;", (url,))
+    conn.close()
+    return result[0] if result else None
 
 
 def find_url_by_id(url_id):
-    query_result = exec_query("SELECT * FROM urls WHERE id = %s;", (url_id,))
-    return query_result[0] if query_result else None
+    conn = connect_to_db()
+    result = exec_query(conn, "SELECT * FROM urls WHERE id = %s;", (url_id,))
+    conn.close()
+    return result[0] if result else None
 
 
 def get_all_urls():
+    conn = connect_to_db()
     query = """
         WITH last_checks AS (
         SELECT *
@@ -60,31 +66,38 @@ def get_all_urls():
         LEFT JOIN last_checks ON urls.id = last_checks.url_id
         ORDER BY urls.id DESC;
     """
-    query_result = exec_query(query)
-    return query_result
+    result = exec_query(conn, query)
+    conn.close()
+    return result
 
 
 def get_all_url_checks(url_id):
-    query_result = exec_query(
+    conn = connect_to_db()
+    result = exec_query(
+        conn,
         "SELECT * FROM url_checks WHERE url_id = %s;",
         (url_id,)
     )
-    return query_result
+    conn.close()
+    return result
 
 
 def add_url_to_db(url):
+    conn = connect_to_db()
     query = """
         INSERT INTO urls (name, created_at)
         VALUES (%(name)s, %(date)s)
         RETURNING id;
     """
 
-    query_result = exec_query(query, {"name": url, "date": dt.today()})
-    url_id = query_result[0].id
+    result = exec_query(conn, query, {"name": url, "date": dt.today()})
+    conn.close()
+    url_id = result[0].id
     return url_id
 
 
 def add_check_to_db(url_id, status_code, data):
+    conn = connect_to_db()
     query = """
         INSERT INTO url_checks
         (url_id, status_code, h1, title, description, created_at)
@@ -108,6 +121,7 @@ def add_check_to_db(url_id, status_code, data):
         "created_at": dt.today()
     }
 
-    query_result = exec_query(query, params)
-    check_id = query_result[0].id
+    result = exec_query(conn, query, params)
+    conn.close()
+    check_id = result[0].id
     return check_id
