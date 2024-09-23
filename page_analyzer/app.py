@@ -7,7 +7,6 @@ from dotenv import load_dotenv
 from flask import (
     Flask,
     flash,
-    get_flashed_messages,
     make_response,
     redirect,
     render_template,
@@ -51,14 +50,13 @@ def show_url_page(url_id):
     Args:
         url_id (str): url id in DB
     """
-    messages = get_flashed_messages(with_categories=True)
+
     data = db.find_url_by_id(url_id)
     checks = db.get_all_url_checks(url_id)
     return render_template(
         "url.html",
         data=data,
         checks=checks,
-        messages=messages
     )
 
 
@@ -78,12 +76,11 @@ def submit_url():
     error = validate_url(url)
     if error:
         flash(error, "danger")
-        messages = get_flashed_messages(with_categories=True)
+
         return (
             render_template(
                 "index.html",
                 url=url,
-                messages=messages,
             ),
             422,
         )
