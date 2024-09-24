@@ -25,13 +25,13 @@ app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 app.config["DATABASE_URL"] = os.getenv("DATABASE_URL")
 
 
-@app.route("/")
+@app.get("/")
 def index():
     """Show main page"""
     return render_template("index.html")
 
 
-@app.route("/urls")
+@app.get("/urls")
 def show_urls_list():
     """Select all urls from DB and show them"""
     urls = db.get_all_urls()
@@ -41,7 +41,7 @@ def show_urls_list():
     )
 
 
-@app.route("/urls/<url_id>")
+@app.get("/urls/<url_id>")
 def show_url_page(url_id):
     """
     Select specific url from DB by id.
@@ -122,7 +122,7 @@ def post_check(url_id):
 
 
 # Get png image from static
-@app.route("/<image>")
+@app.get("/<image>")
 def get_png_image(image):
     """
     Returns png image from static files.
