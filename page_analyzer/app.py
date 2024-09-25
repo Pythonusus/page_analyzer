@@ -33,7 +33,7 @@ def index():
 @app.get("/urls")
 def show_urls_list():
     """Select all urls from DB and show them"""
-    conn = db.connect_to_db()
+    conn = db.connect_to_db(app)
     urls = db.get_all_urls(conn)
     conn.close()
     return render_template(
@@ -52,7 +52,7 @@ def show_url_page(url_id):
         url_id (str): url id in DB
     """
 
-    conn = db.connect_to_db()
+    conn = db.connect_to_db(app)
     data = db.find_url_by_id(conn, url_id)
     checks = db.get_all_url_checks(conn, url_id)
     conn.close()
@@ -88,7 +88,7 @@ def submit_url():
             422,
         )
     url = normalize_url(url)
-    conn = db.connect_to_db()
+    conn = db.connect_to_db(app)
     url_in_db = db.find_url_by_name(conn, url)
 
     if url_in_db:
@@ -111,7 +111,7 @@ def post_check(url_id):
     If no errors occured, parse html from given url, add check to DB,
     redirect to url page and flash success message.
     """
-    conn = db.connect_to_db()
+    conn = db.connect_to_db(app)
     url = db.find_url_by_id(conn, url_id)
     try:
         response = requests.get(url.name, timeout=10)

@@ -4,11 +4,9 @@ from datetime import date as dt
 
 from psycopg2 import connect, extras
 
-import page_analyzer.app as pa
 
-
-def connect_to_db():
-    return connect(pa.app.config.get("DATABASE_URL"))
+def connect_to_db(app):
+    return connect(app.config.get("DATABASE_URL"))
 
 
 def exec_query(conn, query, params=None):
