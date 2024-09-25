@@ -7,7 +7,6 @@ from dotenv import load_dotenv
 from flask import (
     Flask,
     flash,
-    make_response,
     redirect,
     render_template,
     request,
@@ -129,22 +128,3 @@ def post_check(url_id):
     flash("Страница успешно проверена", "success")
     conn.close()
     return redirect(url_for("show_url_page", url_id=url_id))
-
-
-# Get png image from static
-@app.get("/<image>")
-def get_png_image(image):
-    """
-    Returns png image from static files.
-
-    Args:
-        image (str): file name
-
-    Returns:
-        Response obj: png image
-    """
-    with open(f"page_analyzer/static/{image}", mode="rb") as f:
-        image = f.read()
-    res = make_response(image)
-    res.headers["Content-Type"] = "image/png"
-    return res
