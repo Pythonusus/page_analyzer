@@ -30,22 +30,17 @@ def exec_query(conn, query, params=None):
     return data
 
 
-def find_url_by_name(url):
-    conn = connect_to_db()
+def find_url_by_name(conn, url):
     result = exec_query(conn, "SELECT * FROM urls WHERE name = %s;", (url,))
-    conn.close()
     return result[0] if result else None
 
 
-def find_url_by_id(url_id):
-    conn = connect_to_db()
+def find_url_by_id(conn, url_id):
     result = exec_query(conn, "SELECT * FROM urls WHERE id = %s;", (url_id,))
-    conn.close()
     return result[0] if result else None
 
 
-def get_all_urls():
-    conn = connect_to_db()
+def get_all_urls(conn):
     query = """
         WITH last_checks AS (
         SELECT *
@@ -67,23 +62,19 @@ def get_all_urls():
         ORDER BY urls.id DESC;
     """
     result = exec_query(conn, query)
-    conn.close()
     return result
 
 
-def get_all_url_checks(url_id):
-    conn = connect_to_db()
+def get_all_url_checks(conn, url_id):
     result = exec_query(
         conn,
         "SELECT * FROM url_checks WHERE url_id = %s;",
         (url_id,)
     )
-    conn.close()
     return result
 
 
-def add_url_to_db(url):
-    conn = connect_to_db()
+def add_url_to_db(conn, url):
     query = """
         INSERT INTO urls (name, created_at)
         VALUES (%(name)s, %(date)s)
@@ -91,13 +82,11 @@ def add_url_to_db(url):
     """
 
     result = exec_query(conn, query, {"name": url, "date": dt.today()})
-    conn.close()
     url_id = result[0].id
     return url_id
 
 
-def add_check_to_db(url_id, status_code, data):
-    conn = connect_to_db()
+def add_check_to_db(conn, url_id, status_code, data):
     query = """
         INSERT INTO url_checks
         (url_id, status_code, h1, title, description, created_at)
@@ -122,6 +111,5 @@ def add_check_to_db(url_id, status_code, data):
     }
 
     result = exec_query(conn, query, params)
-    conn.close()
     check_id = result[0].id
     return check_id

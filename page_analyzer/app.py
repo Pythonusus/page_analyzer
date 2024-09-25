@@ -34,7 +34,9 @@ def index():
 @app.get("/urls")
 def show_urls_list():
     """Select all urls from DB and show them"""
-    urls = db.get_all_urls()
+    conn = db.connect_to_db()
+    urls = db.get_all_urls(conn)
+    conn.close()
     return render_template(
         "urls.html",
         urls=urls,
@@ -51,8 +53,10 @@ def show_url_page(url_id):
         url_id (str): url id in DB
     """
 
-    data = db.find_url_by_id(url_id)
-    checks = db.get_all_url_checks(url_id)
+    conn = db.connect_to_db()
+    data = db.find_url_by_id(conn, url_id)
+    checks = db.get_all_url_checks(conn, url_id)
+    conn.close()
     return render_template(
         "url.html",
         data=data,
@@ -85,14 +89,17 @@ def submit_url():
             422,
         )
     url = normalize_url(url)
-    url_in_db = db.find_url_by_name(url)
+    conn = db.connect_to_db()
+    url_in_db = db.find_url_by_name(conn, url)
+
     if url_in_db:
         url_id = url_in_db.id
         flash("Страница уже существует", "info")
     else:
-        url_id = db.add_url_to_db(url)
+        url_id = db.add_url_to_db(conn, url)
         flash("Страница успешно добавлена", "success")
 
+    conn.close()
     return redirect(url_for("show_url_page", url_id=url_id))
 
 
@@ -105,19 +112,22 @@ def post_check(url_id):
     If no errors occured, parse html from given url, add check to DB,
     redirect to url page and flash success message.
     """
-    url = db.find_url_by_id(url_id)
+    conn = db.connect_to_db()
+    url = db.find_url_by_id(conn, url_id)
     try:
         response = requests.get(url.name, timeout=10)
         response.raise_for_status()
     except requests.RequestException:
         flash("Произошла ошибка при проверке", "danger")
+        conn.close()
         return redirect(url_for("show_url_page", url_id=url_id))
 
     status_code = response.status_code
     html = response.text
     data = parse_html(html)
-    db.add_check_to_db(url_id, status_code, data)
+    db.add_check_to_db(conn, url_id, status_code, data)
     flash("Страница успешно проверена", "success")
+    conn.close()
     return redirect(url_for("show_url_page", url_id=url_id))
 
 
