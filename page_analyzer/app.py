@@ -128,3 +128,13 @@ def post_check(url_id):
     flash("Страница успешно проверена", "success")
     conn.close()
     return redirect(url_for("show_url_page", url_id=url_id))
+
+
+@app.errorhandler(404)
+def page_not_found(err):
+    return render_template("errors/404.html")
+
+
+@app.errorhandler(500)
+def server_error(err):
+    return render_template("errors/500.html")
