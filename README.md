@@ -40,29 +40,47 @@ Page Analyzer is a simple Flask web-application that checks sites for SEO suitab
 7. beautifulsoup4 >= 4.12.3
 8. requests >= 2.32.3
 
-### Installing
+### Installing with Docker
+1. Clone GitHub repo:
+```
+git clone https://github.com/Pythonusus/page_analyzer.git
+```
+2. Install Docker using [official guide](https://docs.docker.com/desktop/)
+
+3. Provide all neccessary environmental variables. You can see example of .env file in [.env.example](https://github.com/Pythonusus/python-project-83/blob/main/.env.example) file.
+
+4. Build and run the Docker container:
+```
+make docker-build-prod
+make docker-start-prod
+```
+The application will be available at http://localhost:8000
+
+
+### Installing without Docker
 
 1. Clone GitHub repo:
 ```
 git clone https://github.com/Pythonusus/python-project-83
 ```
 
-2. Provide SECRET_KEY environmental variable to secure your data:
+2. Provide all neccessary environmental variables. You can see example of .env file in [.env.example](https://github.com/Pythonusus/python-project-83/blob/main/.env.example) file.
+
+3. Install Poetry and config it:
 ```
-export SECRET_KEY=yourveryhardtobreakpassword
+sudo apt-get update && \
+     apt-get install -y curl build-essential libpq-dev && \
+     rm -rf /var/lib/apt/lists/* && \
+     curl -sSL https://install.python-poetry.org | python3 - && \
+     poetry config virtualenvs.in-project true
 ```
 
-3. Provide DATABASE_URL environmental variable to connect to your PostgreSQL database:
-```
-export DATABASE_URL={provider}://{user}:{password}@{host}:{port}/{db}
-```
-
-3. Install all neccessary dependencies using Poetry and connect to DB via pysql utility:
+4. Install all neccessary dependencies using Poetry and connect to DB via pysql utility:
 ```
 make build
 ```
 
-4. Start Page analyzer locally:
+5. Start Page analyzer locally:
 ```
 make start
 ```
@@ -74,6 +92,7 @@ make start
 - [PostgreSQL](https://www.postgresql.org/) - Powerful, open source object-relational database system
 - [Flask](https://pypi.org/project/Flask/) - Lightweight WSGI web application framework
 - [Gunicorn](https://gunicorn.org/) - Python WSGI HTTP Server for UNIX
+- [Docker](https://www.docker.com/) - Open platform for building, shipping, and running applications
 
 <a name = "authors"></a>
 ## ✍️ Authors
