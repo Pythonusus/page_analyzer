@@ -17,7 +17,6 @@ from page_analyzer import db
 from page_analyzer.utils import normalize_url, parse_html, validate_url
 
 load_dotenv()
-DATABASE_URL = os.getenv("DATABASE_URL")
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
